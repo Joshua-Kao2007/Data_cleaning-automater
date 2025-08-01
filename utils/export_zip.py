@@ -66,6 +66,8 @@ def create_cleaned_data_zip() -> BytesIO:
         }
 
         for prefix, func in demo_dict_funcs.items():
+            print(f"Calling: {prefix} → {func}")
+
             df_dict = func()
             if isinstance(df_dict, dict):
                 for key, df in df_dict.items():
