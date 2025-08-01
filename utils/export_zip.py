@@ -24,7 +24,7 @@ st.title("📦 Export Cleaned Data as ZIP")
 uploaded_file = st.file_uploader("Upload your survey Excel file", type=["xlsx"])
 season = st.selectbox("Select a season", ["2023-24", "2024-25", "Spring 2025"])
 
-def create_cleaned_data_zip(df: pd.DataFrame, season: str) -> BytesIO:
+def create_cleaned_data_zip(df: pd.DataFrame) -> BytesIO:
     zip_buffer = BytesIO()
     with zipfile.ZipFile(zip_buffer, "w") as zip_file:
 
