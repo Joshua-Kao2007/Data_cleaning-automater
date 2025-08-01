@@ -21,7 +21,7 @@ from Demographics.income_bracket import return_income_bracket  # returns dict[br
 
 st.title("📦 Export Cleaned Data as ZIP")
 
-if st.button("Create ZIP File"):
+def create_cleaned_data_zip() -> BytesIO:
     zip_buffer = BytesIO()
 
     with zipfile.ZipFile(zip_buffer, "w") as zip_file:

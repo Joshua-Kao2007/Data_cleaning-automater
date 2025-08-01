@@ -12,6 +12,7 @@ from Demographics.military import return_military
 from Demographics.income_bracket import return_income_bracket
 from Demographics.gender import return_gender
 from Demographics.zip_code import home_zip_code
+from utils.zip_file import create_cleaned_data_zip
 
 st.set_page_config(page_title="Survey Data Cleaner", layout="wide")
 st.title("📊 Survey Data Cleaning Dashboard")
@@ -53,4 +54,5 @@ elif page == "Income Bracket":
     return_income_bracket(df)
 elif page == "Zip Code":
     home_zip_code(df)
-elif page == "Full ip file"
+elif page == "Full Zip File":
+    create_cleaned_data_zip()
