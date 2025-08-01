@@ -10,14 +10,14 @@ from KPIs.itr import return_itr
 from KPIs.tmv import return_tmv
 
 # --- Import your Demographic cleaning functions ---
-from Demographics.education import education_level             # returns dict[level]→DataFrame
-from Demographics.employment import return_employment          # returns dict[role]→DataFrame
-from Demographics.ethnicity import return_ethnicity            # returns dict[eth]→DataFrame
-from Demographics.marital_status import return_marital_status  # returns dict[status]→DataFrame
-from Demographics.birth_year import return_birth_year          # returns single DataFrame
-from Demographics.zip_code import home_zip_code                # returns single DataFrame
-from Demographics.military import return_military              # returns dict["Yes"/"No"]→DataFrame
-from Demographics.income_bracket import return_income_bracket  # returns dict[bracket]→DataFrame
+from Demographics.education import education_level
+from Demographics.employment import return_employment
+from Demographics.ethnicity import return_ethnicity
+from Demographics.marital_status import return_marital_status
+from Demographics.birth_year import return_birth_year
+from Demographics.zip_code import home_zip_code
+from Demographics.military import return_military
+from Demographics.income_bracket import return_income_bracket
 
 st.title("📦 Export Cleaned Data as ZIP")
 
@@ -35,22 +35,25 @@ def create_cleaned_data_zip() -> BytesIO:
 
         for name, func in kpi_funcs.items():
             df = func()
-            excel_buffer = BytesIO()
-            with pd.ExcelWriter(excel_buffer, engine='openpyxl') as writer:
-                df.to_excel(writer, index=False)
-            zip_file.writestr(name, excel_buffer.getvalue())
+            if df is not None:
+                excel_buffer = BytesIO()
+                with pd.ExcelWriter(excel_buffer, engine='openpyxl') as writer:
+                    df.to_excel(writer, index=False)
+                zip_file.writestr(name, excel_buffer.getvalue())
 
         # --- Demographics that return single DataFrame ---
-        demo_single = {
-            "BirthYear_Cleaned.xlsx": return_birth_year(),
-            "HomeZipCode_Cleaned.xlsx": home_zip_code(),
+        demo_single_funcs = {
+            "BirthYear_Cleaned.xlsx": return_birth_year,
+            "HomeZipCode_Cleaned.xlsx": home_zip_code,
         }
 
-        for name, df in demo_single.items():
-            excel_buffer = BytesIO()
-            with pd.ExcelWriter(excel_buffer, engine='openpyxl') as writer:
-                df.to_excel(writer, index=False)
-            zip_file.writestr(name, excel_buffer.getvalue())
+        for name, func in demo_single_funcs.items():
+            df = func()
+            if df is not None:
+                excel_buffer = BytesIO()
+                with pd.ExcelWriter(excel_buffer, engine='openpyxl') as writer:
+                    df.to_excel(writer, index=False)
+                zip_file.writestr(name, excel_buffer.getvalue())
 
         # --- Demographics that return dicts of DataFrames ---
         demo_dict_funcs = {
@@ -64,16 +67,24 @@ def create_cleaned_data_zip() -> BytesIO:
 
         for prefix, func in demo_dict_funcs.items():
             df_dict = func()
-            for key, df in df_dict.items():
-                fname = f"{prefix}_{key}.xlsx".replace(" ", "_")
-                excel_buffer = BytesIO()
-                with pd.ExcelWriter(excel_buffer, engine='openpyxl') as writer:
-                    df.to_excel(writer, index=False)
-                zip_file.writestr(fname, excel_buffer.getvalue())
+            if isinstance(df_dict, dict):
+                for key, df in df_dict.items():
+                    if df is not None:
+                        fname = f"{prefix}_{key}.xlsx".replace(" ", "_")
+                        excel_buffer = BytesIO()
+                        with pd.ExcelWriter(excel_buffer, engine='openpyxl') as writer:
+                            df.to_excel(writer, index=False)
+                        zip_file.writestr(fname, excel_buffer.getvalue())
 
+    zip_buffer.seek(0)
+    return zip_buffer
+
+# 🔘 UI Trigger
+if st.button("Create ZIP"):
+    zip_data = create_cleaned_data_zip()
     st.download_button(
         label="📥 Download All Cleaned Data (ZIP)",
-        data=zip_buffer.getvalue(),
+        data=zip_data.getvalue(),
         file_name="All_Cleaned_Data.zip",
         mime="application/zip"
     )
