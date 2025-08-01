@@ -28,7 +28,7 @@ except Exception:
 
 page = st.sidebar.radio(
     "Choose view:",
-    ["KPIs", "Highest Education Level", "Gender", "Employment Level", "Industry Code", "Marital Status", "Race/Ethnicity", "Birth Year", "Military Status", "Income Bracket", "Zip Code"]
+    ["KPIs", "Highest Education Level", "Gender", "Employment Level", "Industry Code", "Marital Status", "Race/Ethnicity", "Birth Year", "Military Status", "Income Bracket", "Zip Code", "Full Zip File"]
 )
 
 if page == "KPIs":
@@ -53,3 +53,4 @@ elif page == "Income Bracket":
     return_income_bracket(df)
 elif page == "Zip Code":
     home_zip_code(df)
+elif page == "Full ip file"
