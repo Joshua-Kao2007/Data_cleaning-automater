@@ -55,4 +55,4 @@ elif page == "Income Bracket":
 elif page == "Zip Code":
     home_zip_code(df)
 elif page == "Full Zip File":
-    create_cleaned_data_zip()
+    create_cleaned_data_zip(df, season)
