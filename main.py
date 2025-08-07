@@ -19,17 +19,6 @@ uploaded_file = st.file_uploader("Upload your survey Excel file", type=["xlsx", 
 if uploaded_file:
     df = pd.read_excel(uploaded_file)
 
-    if st.button("Create ZIP"):
-        zip_data = create_cleaned_data_zip(df)
-
-        # ✅ FINAL download button that shows AFTER clicking "Create ZIP"
-        st.success("✅ ZIP file created successfully!")
-        st.download_button(
-            label="📥 Download All Cleaned Data",
-            data=zip_data.getvalue(),
-            file_name="cleaned_data.zip",
-            mime="application/zip"
-        )
 if not uploaded_file:
     st.stop()
 try:
